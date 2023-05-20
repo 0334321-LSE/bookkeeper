@@ -26,8 +26,10 @@
   <artifactId>bookkeeper-stats-api</artifactId>
   <name>Apache BookKeeper :: Stats API</name>
   <url>http://maven.apache.org</url>
-  <properties>
-  </properties>
+    <properties>
+        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>20</maven.compiler.target>
+    </properties>
   <build>
     <plugins>
       <plugin>

@@ -83,7 +83,7 @@ import org.slf4j.LoggerFactory;
     category = CATEGORY_SERVER,
     help = "Bookie related stats"
 )
-public class InterleavedLedgerStorage implements CompactableLedgerStorage, EntryLogListener {
+public class    InterleavedLedgerStorage implements CompactableLedgerStorage, EntryLogListener {
     private static final Logger LOG = LoggerFactory.getLogger(InterleavedLedgerStorage.class);
 
     DefaultEntryLogger entryLogger;
