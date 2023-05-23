@@ -39,7 +39,7 @@ import org.apache.commons.lang.StringUtils;
  * subclasses before they have been fully constructed.
  *
  */
-public abstract class AbstractDNSToSwitchMapping implements DNSToSwitchMapping, Configurable {
+public abstract class   AbstractDNSToSwitchMapping implements DNSToSwitchMapping, Configurable {
 
     private Configuration conf;
     private BookieAddressResolver bookieAddressResolver;
