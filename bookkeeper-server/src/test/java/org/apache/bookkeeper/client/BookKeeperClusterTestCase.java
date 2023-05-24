@@ -1,4 +1,4 @@
-package org.apache.bookkeeper.client.BookKeeperTests;
+package org.apache.bookkeeper.client;
 
 /*
  *
@@ -55,7 +55,6 @@ import org.apache.bookkeeper.bookie.UncleanShutdownDetection;
 import org.apache.bookkeeper.bookie.UncleanShutdownDetectionImpl;
 
 
-import org.apache.bookkeeper.client.BookKeeperTestClient;
 import org.apache.bookkeeper.client.util.*;
 import org.apache.bookkeeper.common.allocator.ByteBufAllocatorWithOomHandler;
 import org.apache.bookkeeper.common.allocator.PoolingPolicy;

@@ -1,7 +1,5 @@
 package org.apache.bookkeeper.client;
 
-import org.apache.bookkeeper.client.BookKeeperTests.BookKeeperClusterTestCase;
-
 public class BookKeeperAdminTest extends BookKeeperClusterTestCase {
     private boolean expectedResult;
     private BookKeeper.DigestType digestType = BookKeeper.DigestType.CRC32;

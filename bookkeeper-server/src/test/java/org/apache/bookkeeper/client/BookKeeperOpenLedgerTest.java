@@ -1,7 +1,5 @@
-package org.apache.bookkeeper.client.BookKeeperTests;
+package org.apache.bookkeeper.client;
 
-import org.apache.bookkeeper.client.BookKeeper;
-import org.apache.bookkeeper.client.LedgerHandle;
 import org.apache.bookkeeper.client.BookKeeper.DigestType;
 import org.junit.Before;
 import org.junit.runner.RunWith;

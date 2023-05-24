@@ -1,11 +1,8 @@
-package org.apache.bookkeeper.client.BookKeeperTests;
+package org.apache.bookkeeper.client;
 
 
-import org.apache.bookkeeper.client.BKException;
-import org.apache.bookkeeper.client.BookKeeper;
 import org.apache.bookkeeper.client.BookKeeper.DigestType;
 
-import org.apache.bookkeeper.client.LedgerHandle;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -127,5 +124,7 @@ public class BookKeeperCreateLedgerTest extends
     public void tearDown() throws BKException, InterruptedException, IOException {
         if (this.ledgerHandle != null)
             this.ledgerHandle.close();
+        if (this.bkClient != null)
+            this.bkClient.close();
     }
 }
