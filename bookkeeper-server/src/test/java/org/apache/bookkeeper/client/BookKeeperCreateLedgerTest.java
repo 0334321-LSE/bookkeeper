@@ -3,10 +3,8 @@ package org.apache.bookkeeper.client;
 
 import org.apache.bookkeeper.client.BookKeeper.DigestType;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.bookkeeper.client.conf.BookKeeperClusterTestCase;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -18,7 +16,7 @@ import java.util.Collection;
 
 @RunWith(Parameterized.class)
 public class BookKeeperCreateLedgerTest extends
-        BookKeeperClusterTestCase{
+        BookKeeperClusterTestCase {
 
     private int ensSize;
     private int wQS;
@@ -39,9 +37,9 @@ public class BookKeeperCreateLedgerTest extends
         /*0*/   {4,         3,          2,         DigestType.MAC,        "abc",        false},
         /*1*/   {3,         2,          1,         DigestType.CRC32,      "abc",        false},
         /*2*/   {2,         1,          0,         DigestType.CRC32C,     "",           false},
-                // wQS = aQS = 0 no replication-> expected exception
+                // wQS = aQS = 0 no replication-> expected exception ?
         /*3*/   {1,         0,          0,         DigestType.DUMMY,      "abc",        true},
-                // eSize = wQs = aQS = 0 no replication -> expected exception
+                // eSize = wQs = aQS = 0 no replication -> expected exception ?
         /*4*/   {0,         0,          0,         DigestType.DUMMY,      "abc",        true},
                 // eSize < wQs && eSize < 0 -> expected exception
         /*5*/   {-1,         2,          1,        DigestType.CRC32C,     "abc",        true},
@@ -56,11 +54,8 @@ public class BookKeeperCreateLedgerTest extends
                 // null password -> expected exception
         /*10*/   {4,         2,          1,        DigestType.MAC,        null,        true},
                 // special characters composed password-> no exception
-        /*11*/   {4,         2,          1,        DigestType.MAC,        "/n /t",        false},
-
-
+        /*11*/   {4,         2,          1,        DigestType.MAC,        "/n /t",        false}
                 //TODO: ask deAngelis how to work with test parameters with ID : 3-4-8
-
         });
     }
 
@@ -74,7 +69,7 @@ public class BookKeeperCreateLedgerTest extends
     }
 
     public BookKeeperCreateLedgerTest(int ensSize, int wQS, int aQS, DigestType digestType, String passw, boolean isExceptionExpected){
-        super(5,180);
+        super(5,60);
 
         this.ensSize = ensSize;
         this.wQS = wQS;
@@ -91,10 +86,16 @@ public class BookKeeperCreateLedgerTest extends
     @Test
     public void CreateLedgerTest() {
 
-            if(this.isExceptionExpected){
+        long entryId;
+        if(this.isExceptionExpected){
                 try {
                     //exception was expected, it must go to catch branch
                     this.ledgerHandle = this.bkClient.createLedger(this.ensSize,this.wQS,this.aQS,this.digestType,this.password);
+                    //this block totally the execution
+                    //entryId = this.ledgerHandle.addEntry("Expect and error".getBytes());
+                    if(this.ledgerHandle == null)
+                        //if is null when here, can be considered a right behavior
+                        Assert.assertNull(this.ledgerHandle);
                     Assert.assertFalse("An exception was expected. Test is gone wrong", this.isExceptionExpected);
 
                 }catch (Exception e){
@@ -105,8 +106,11 @@ public class BookKeeperCreateLedgerTest extends
                 try {
                     //exception wasn't expected, it must remain here
                     this.ledgerHandle = this.bkClient.createLedger(this.ensSize,this.wQS,this.aQS,this.digestType,this.password);
-                    //Must be not null
-                    Assert.assertNotNull(this.ledgerHandle);
+                    if(this.ledgerHandle == null)
+                        //must be not null
+                        Assert.assertNotNull(this.ledgerHandle);
+                    entryId = this.ledgerHandle.addEntry("Expect that works".getBytes());
+
                     Assert.assertFalse("No exception was expected. Test is gone correctly", this.isExceptionExpected);
 
                 }catch (Exception e){
@@ -114,17 +118,16 @@ public class BookKeeperCreateLedgerTest extends
                             this.isExceptionExpected);
                 }
             }
-
-
     }
 
-
-
     @After
-    public void tearDown() throws BKException, InterruptedException, IOException {
+    public void tearDown() throws BKException, InterruptedException {
+        //Close the ledger handler, bookkeeper client and the zookeeper
         if (this.ledgerHandle != null)
             this.ledgerHandle.close();
         if (this.bkClient != null)
             this.bkClient.close();
+        if (zkc!=null)
+            zkc.close();
     }
 }

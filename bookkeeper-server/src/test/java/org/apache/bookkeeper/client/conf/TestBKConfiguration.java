@@ -19,7 +19,7 @@
  *
  */
 
-package org.apache.bookkeeper.client.util;
+package org.apache.bookkeeper.client.conf;
 
 import java.net.NetworkInterface;
 import java.net.SocketException;

@@ -15,7 +15,7 @@ on:
     branches: [ "isw2-testing" ]
 
 jobs:
-  test:
+  install:
 
     runs-on: ubuntu-latest
 
@@ -27,8 +27,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-      - name: Test phase with Maven
-        run: mvn clean test
+      - name: Install phase with Maven
+        run: mvn clean install
 
   verify:
 

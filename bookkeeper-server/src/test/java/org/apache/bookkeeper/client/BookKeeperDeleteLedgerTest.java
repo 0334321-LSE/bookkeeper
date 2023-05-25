@@ -1,62 +1,55 @@
 package org.apache.bookkeeper.client;
 
-import org.apache.bookkeeper.client.BookKeeper.DigestType;
 import org.apache.bookkeeper.client.conf.BookKeeperClusterTestCase;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class BookKeeperOpenLedgerTest extends
-        BookKeeperClusterTestCase {
+public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
+    private boolean isExceptionExpected;
     private long ledgerID;
-    private BookKeeper.DigestType digestType;
-    private byte[] password;
     private BookKeeper bkClient;
     private LedgerHandle ledgerHandle;
-    private boolean isExceptionExpected;
+
 
     @Parameterized.Parameters
     public static Collection<Object[]> getParameters()  {
         //boundaryValues unidimensional selection
         return Arrays.asList(new Object[][] {
-            //ledgID            DigestType          password                 exception
-    /*0*/   {1,                 DigestType.DUMMY,   "aaa".getBytes(),        false},
-    /*1*/   {0,                 DigestType.MAC,     "abc".getBytes(),        true},
-    /*2*/   {0,                 DigestType.CRC32C,   null,                   true}
+                //ledgID            exception
+        /*0*/   {1,                 false},
+        /*1*/   {0,                 true}
         });
     }
 
+
+    public BookKeeperDeleteLedgerTest(long ledgerID, boolean expectedResult) {
+        super(5, 180);
+        this.ledgerID = ledgerID;
+    }
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception{
         baseConf.setJournalWriteData(true);
         baseClientConf.setUseV2WireProtocol(true);
         super.setUp();
         // creating a ledger
         this.bkClient = new BookKeeper(baseClientConf);
         this.ledgerHandle = this.bkClient.createLedger(3,2,1, BookKeeper.DigestType.DUMMY,"aaa".getBytes());
-
-    }
-
-    public BookKeeperOpenLedgerTest(long ledgerID, BookKeeper.DigestType digestType, byte[] password, boolean isExceptionExpected) throws BKException, IOException, InterruptedException {
-        super(5, 180);
-        this.ledgerID = ledgerID;
-        this.digestType = digestType;
-        this.password = password;
-        this.isExceptionExpected = isExceptionExpected;
     }
 
     @Test
-    public void OpenLedgerTest() {
+    public void DeleteLedgerTest(){
 
         if(this.isExceptionExpected){
             try {
                 //exception was expected, it must go to catch branch
-                LedgerHandle lh = this.bkClient.openLedger(this.ledgerID,this.digestType,this.password);
+                this.bkClient.deleteLedger(this.ledgerID);
                 Assert.assertFalse("An exception was expected. Test is gone wrong", this.isExceptionExpected);
 
             }catch (Exception e){
@@ -66,9 +59,7 @@ public class BookKeeperOpenLedgerTest extends
         }else{
             try {
                 //exception wasn't expected, it must remain here
-                LedgerHandle lh = this.bkClient.openLedger(this.ledgerHandle.getId(),this.digestType,this.password);
-                //Must be not null
-                if(null == lh) Assert.assertNotNull(lh);
+                this.bkClient.deleteLedger(this.ledgerHandle.getId());
                 Assert.assertFalse("No exception was expected. Test is gone correctly", this.isExceptionExpected);
 
             }catch (Exception e){
@@ -77,13 +68,4 @@ public class BookKeeperOpenLedgerTest extends
             }
         }
     }
-
-    @After
-    public void tearDown() throws BKException, InterruptedException {
-        if (this.ledgerHandle != null)
-            this.ledgerHandle.close();
-        if (this.bkClient != null)
-            this.bkClient.close();
-    }
-
 }
