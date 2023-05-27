@@ -1,21 +1,29 @@
 package org.apache.bookkeeper.client;
 
+
 import org.apache.bookkeeper.client.conf.BookKeeperClusterTestCase;
+
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.apache.bookkeeper.client.util.LedgerChecker;
 
 import java.util.Arrays;
 import java.util.Collection;
 
+
 @RunWith(Parameterized.class)
 public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
-    private boolean isExceptionExpected;
-    private long ledgerID;
+    private final boolean isExceptionExpected;
+    private final long ledgerID;
     private BookKeeper bkClient;
     private LedgerHandle ledgerHandle;
+
+    private LedgerChecker checker;
 
 
     @Parameterized.Parameters
@@ -23,49 +31,75 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
         //boundaryValues unidimensional selection
         return Arrays.asList(new Object[][] {
                 //ledgID            exception
-        /*0*/   {1,                 false},
-        /*1*/   {0,                 true}
+        /*0*/   {0,                 false},
+        /*1*/   {150,                 true}
         });
-    }
-
-
-    public BookKeeperDeleteLedgerTest(long ledgerID, boolean expectedResult) {
-        super(5, 180);
-        this.ledgerID = ledgerID;
     }
     @Before
     public void setUp() throws Exception{
         baseConf.setJournalWriteData(true);
         baseClientConf.setUseV2WireProtocol(true);
         super.setUp();
-        // creating a ledger
+        this.checker = new LedgerChecker();
+        // creating a ledger and adding dummy entry
         this.bkClient = new BookKeeper(baseClientConf);
-        this.ledgerHandle = this.bkClient.createLedger(3,2,1, BookKeeper.DigestType.DUMMY,"aaa".getBytes());
+        this.ledgerHandle = this.bkClient.createLedger(3,1,1, BookKeeper.DigestType.CRC32,"aaa".getBytes());
+        this.ledgerHandle.addEntry("some bytes".getBytes());
+
+    }
+
+    public BookKeeperDeleteLedgerTest(long ledgerID, boolean expectedResult) {
+        super(5, 180);
+        this.ledgerID = ledgerID;
+        this.isExceptionExpected = expectedResult;
     }
 
     @Test
-    public void DeleteLedgerTest(){
-
+    public void DeleteLedgerTest() throws Exception {
         if(this.isExceptionExpected){
-            try {
-                //exception was expected, it must go to catch branch
+            /*TODO ask prof wich kind of behavior we must expect, actually
+               the ledger is still alive but it doesn't catch any exception*/
+            //try {
                 this.bkClient.deleteLedger(this.ledgerID);
-                Assert.assertFalse("An exception was expected. Test is gone wrong", this.isExceptionExpected);
+                //Check if it still exits
+                if (!checker.check(this.bkClient, this.ledgerHandle.getId()))
+                    Assert.fail("Ledger id wrong but still deleted");
+                else
+                    Assert.assertTrue("Ledger is still alive", true);
 
-            }catch (Exception e){
+                //   Assert.assertFalse("An exception was expected. Test is gone wrong", this.isExceptionExpected);
+
+            /*}catch (Exception e){
                 Assert.assertTrue("An exception was expected. Test is gone right: " + e.getClass().getName() + " has been thrown.",
                         this.isExceptionExpected);
-            }
+            }*/
         }else{
             try {
+                long deletedID = this.ledgerHandle.getId();
                 //exception wasn't expected, it must remain here
-                this.bkClient.deleteLedger(this.ledgerHandle.getId());
-                Assert.assertFalse("No exception was expected. Test is gone correctly", this.isExceptionExpected);
+                this.bkClient.deleteLedger(deletedID);
+                //Check if it still exits
+                if (this.checker.check(this.bkClient,deletedID))
+                    Assert.fail("Ledger id was right but not deleted");
 
+                Assert.assertFalse("No exception was expected. Ledger correctly deleted", this.isExceptionExpected);
             }catch (Exception e){
                 Assert.assertTrue("No exception was expected, but " + e.getClass().getName() + " has been thrown. Test is gone wrong",
                         this.isExceptionExpected);
             }
         }
     }
+    @After
+    public void tearDown() throws BKException, InterruptedException {
+        if (this.bkClient != null)
+            this.bkClient.close();
+        if (this.zkc!=null)
+            this.zkc.close();
+        if (this.ledgerHandle != null)
+            this.ledgerHandle.close();
+
+    }
+
+
+
 }

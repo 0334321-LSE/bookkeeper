@@ -84,6 +84,8 @@ public class BookKeeperOpenLedgerTest extends
             this.ledgerHandle.close();
         if (this.bkClient != null)
             this.bkClient.close();
+        if (zkc!=null)
+            zkc.close();
     }
 
 }
