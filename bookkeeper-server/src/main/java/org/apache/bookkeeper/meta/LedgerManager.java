@@ -85,7 +85,7 @@ public interface LedgerManager extends Closeable {
      *          <li>{@link org.apache.bookkeeper.client.BKException.ZKException} for other issues</li>
      *          </ul>
      */
-    CompletableFuture<Versioned<LedgerMetadata>> readLedgerMetadata(long ledgerId);
+    CompletableFuture<Versioned<LedgerMetadata>>    readLedgerMetadata(long ledgerId);
 
     /**
      * Write ledger metadata.

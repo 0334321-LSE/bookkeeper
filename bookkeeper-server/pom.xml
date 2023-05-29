@@ -291,7 +291,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
-          <argLine>--add-opens java.base/java.io=ALL-UNNAMED</argLine>
+          <argLine>@{argLine} --add-opens java.base/java.io=ALL-UNNAMED</argLine>
           <trimStackTrace>false</trimStackTrace>
           <properties>
             <property>

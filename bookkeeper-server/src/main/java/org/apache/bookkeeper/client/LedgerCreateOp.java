@@ -183,6 +183,8 @@ class LedgerCreateOp {
         if (this.generateLedgerId) {
             generateLedgerIdAndCreateLedger(metadataBuilder);
         } else {
+            //TODO: if is passed LedgerID it starts build and check the constraints on parameter
+            // otherwise it create a ledger only by checking aCK <= wCK
             this.metadata = metadataBuilder.withId(ledgerId).build();
             // Create ledger with supplied ledgerId
             bk.getLedgerManager().createLedgerMetadata(ledgerId, metadata)

@@ -4,10 +4,7 @@ package org.apache.bookkeeper.client;
 import org.apache.bookkeeper.client.conf.BookKeeperClusterTestCase;
 
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.apache.bookkeeper.client.util.LedgerChecker;
@@ -32,7 +29,7 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
         return Arrays.asList(new Object[][] {
                 //ledgID            exception
         /*0*/   {0,                 false},
-        /*1*/   {150,                 true}
+        /*1*/   {150,               true}
         });
     }
     @Before
@@ -49,7 +46,7 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
     }
 
     public BookKeeperDeleteLedgerTest(long ledgerID, boolean expectedResult) {
-        super(5, 180);
+        super(5, 60);
         this.ledgerID = ledgerID;
         this.isExceptionExpected = expectedResult;
     }
@@ -81,22 +78,24 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
                 //Check if it still exits
                 if (this.checker.check(this.bkClient,deletedID))
                     Assert.fail("Ledger id was right but not deleted");
-
+                System.out.println("\n!!! Test gone correctly, no exception was found.");
                 Assert.assertFalse("No exception was expected. Ledger correctly deleted", this.isExceptionExpected);
             }catch (Exception e){
+                System.out.println("\n!!! Caught exception: --->"+e.getClass().getName());
                 Assert.assertTrue("No exception was expected, but " + e.getClass().getName() + " has been thrown. Test is gone wrong",
                         this.isExceptionExpected);
             }
         }
     }
+
     @After
     public void tearDown() throws BKException, InterruptedException {
+
         if (this.bkClient != null)
             this.bkClient.close();
         if (this.zkc!=null)
             this.zkc.close();
-        if (this.ledgerHandle != null)
-            this.ledgerHandle.close();
+
 
     }
 

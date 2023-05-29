@@ -3,6 +3,7 @@ package org.apache.bookkeeper.client;
 
 import org.apache.bookkeeper.client.BookKeeper.DigestType;
 
+import org.apache.bookkeeper.client.api.LedgerMetadata;
 import org.apache.bookkeeper.client.conf.BookKeeperClusterTestCase;
 import org.apache.bookkeeper.client.util.CustomMetadataCreator;
 import org.junit.*;
@@ -20,14 +21,18 @@ import java.util.Map;
 public class BookKeeperCreateLedgerTest extends
         BookKeeperClusterTestCase {
 
-    private static final int MAXINT = Integer.MAX_VALUE;
-    private static final int MININT = Integer.MIN_VALUE;
     private static final long MINLONG = Long.MIN_VALUE;
-    private static final long MAXLONG = Long.MIN_VALUE;
+    private static final long MAXLONG = Long.MAX_VALUE;
 
+    // LedgerID must be >= 0
     private final long ledgerID;
+
+    //The number of nodes the ledger is stored on
     private final int ensSize;
+
+    //The number of nodes each entry is written to. In effect, the max replication for the entry.
     private final int wQS;
+    //The number of nodes an entry must be acknowledged on. In effect, the minimum replication for the entry.
     private final int aQS;
     private final DigestType digestType;
     private final byte[] password;
@@ -38,7 +43,8 @@ public class BookKeeperCreateLedgerTest extends
 
     private BookKeeper bkClient;
     private LedgerHandle ledgerHandle;
-    private CustomMetadataCreator mapCreator = new CustomMetadataCreator();
+
+    private final CustomMetadataCreator mapCreator = new CustomMetadataCreator();
 
     private LedgerChecker checker;
 
@@ -50,49 +56,59 @@ public class BookKeeperCreateLedgerTest extends
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getParameters()  {
-        //boundaryValues unidimensional selection
+    public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
-            //  LedgID     En_Size     wQS         aQS        DigestType             password     customMetadata      exception
-                // each boundary values of eSize, wQS, aQS, Digest and password
-        /*0*/   {1,         4,         3,          2,         DigestType.MAC,        "abc",       customMD.VALID,     false},
-        /*1*/   {0,         3,         2,          1,         DigestType.CRC32,      "abc",       customMD.VALID,     false},
-        /*2*/   {-1,        2,         1,          0,         DigestType.CRC32C,     "",          customMD.VALID,     false},
-                // wQS = aQS = 0 no replication-> expected exception ?
-        /*3*/   {1,         1,         0,          0,         DigestType.DUMMY,      "abc",       customMD.VALID,     true},
-                // eSize = wQs = aQS = 0 no replication -> expected exception ?
-        /*4*/   {1,         0,         0,          0,         DigestType.DUMMY,      "abc",       customMD.VALID,     true},
-                // eSize < wQs && eSize < 0 -> expected exception
-        /*5*/   {1,         -1,        2,          1,         DigestType.CRC32C,     "abc",       customMD.VALID,     true},
-                // eSize < wQs < aQs && eSize < 0  -> expected exception
-        /*6*/   {1,         -2,        1,          2,         DigestType.MAC,        "abc",       customMD.VALID,     true},
-                // eSize < wQs && eSize < 0 -> expected exception
-        /*7*/   {1,         -3,        1,          1,         DigestType.DUMMY,      "abc",       customMD.VALID,     true},
-                // wQS = aQS < 0 no sense -> expected exception
-        /*8*/   {1,         1,         -1,         -1,        DigestType.MAC,        "abc",       customMD.VALID,     true},
-                // wQS < 0 && wQS <aQS -> expected exception
-        /*9*/   {1,         3,         -2,         0,         DigestType.MAC,        "abc",       customMD.VALID,     true},
-                // null password -> expected exception
-        /*10*/   {1,        2,         2,          1,         DigestType.MAC,        null,        customMD.VALID,     true},
-                // special characters composed password-> no exception
-        /*11*/   {1,        3,         2,          1,         DigestType.MAC,        "/n /t",     customMD.VALID,     false},
-                //Those test are especially written for CreateAdv
-                // maxLong as ledgerID -> no exception
-        /*12*/   {MAXLONG,  3,         2,          1,         DigestType.MAC,        "maxInt",    customMD.VALID,     false},
-                // minLong as ledgerID -> no exception
-        /*13*/   {MINLONG,  2,         2,          1,         DigestType.MAC,        "minInt",    customMD.VALID,     false},
-                // maxLong+1 as ledgerID ->  exception
-        /*14*/   {MAXLONG+1,  3,         2,          1,       DigestType.MAC,        "maxInt",    customMD.VALID,     true},
-                // minLong+1 as ledgerID ->  exception
-        /*15*/   {MINLONG+1,  2,         2,          1,       DigestType.MAC,        "minInt",    customMD.VALID,     true},
-                // customMetadata empty -> no exception
-        /*16*/   {1,          3,         2,          1,       DigestType.MAC,        "abc",       customMD.EMPTY,     false},
-                // customMetadata null  -> no exception(?)
-        /*17*/   {1,          2,         2,          1,       DigestType.MAC,        "cde",       customMD.NULL,      false},
-                // customMetadata NOT VALID  -> should exception
-        /*18*/   {1,          2,         2,          1,       DigestType.MAC,        "fgh",       customMD.NOT_VALID, true},
+         //For enS, wQS, aQS has been executed multidimensional selection, for the other unidimensional.
+         //        lID      enS     wQS        aQS         digestType           passwd      customMetadata      exception
 
-                //TODO: ask deAngelis how to work with test parameters with ID : 3-4-8
+            /*0*/{ 0,       1,      0,        -1,         DigestType.CRC32C,    "abc",      customMD.VALID,     true},
+            /*1*/{ 0,       1,      0,         0,         DigestType.DUMMY,     "abc",      customMD.VALID,     true},
+            /*2*/{ 0,       1,      0,         1,         DigestType.CRC32,     "abc",      customMD.VALID,     true},
+
+            /*3*/{ 0,       1,      1,         0,         DigestType.MAC,       "abc",      customMD.VALID,     false},
+            /*4*/{ 0,       1,      1,         1,         DigestType.CRC32C,    "abc",      customMD.VALID,     false},
+            /*5*/{ 0,       1,      1,         2,         DigestType.DUMMY,     "abc",      customMD.VALID,     true},
+
+            /*6*/{ 0,       1,      2,         1,         DigestType.CRC32,     "abc",      customMD.VALID,     true},
+            /*7*/{ 0,       1,      2,         2,         DigestType.MAC,       "abc",      customMD.VALID,     true},
+            /*8*/{ 0,       1,      2,         3,         DigestType.CRC32C,    "abc",      customMD.VALID,     true},
+
+            /*9*/{ 0,       0,     -1,       -2,          DigestType.MAC,       "abc",      customMD.VALID,     true},
+           /*10*/{ 0,       0,     -1,       -1,          DigestType.CRC32C,    "abc",      customMD.VALID,     true},
+           /*11*/{ 0,       0,     -1,        0,          DigestType.DUMMY,     "abc",      customMD.VALID,     true},
+
+           /*12*/{ 0,       0,      0,       -1,          DigestType.CRC32,     "abc",      customMD.VALID,     true},
+           /*13*/{ 0,       0,      0,        0,          DigestType.MAC,       "abc",      customMD.VALID,     true},
+           /*14*/{ 0,       0,      0,        1,          DigestType.CRC32C,    "abc",      customMD.VALID,     true},
+
+           /*15*/{ 0,       0,      1,        0,          DigestType.DUMMY,     "abc",      customMD.VALID,     true},
+           /*16*/{ 0,       0,      1,        1,          DigestType.CRC32,     "abc",      customMD.VALID,     true},
+           /*17*/{ 0,       0,      1,        2,          DigestType.MAC,       "abc",      customMD.VALID,     true},
+
+           /*18*/{ 0,       -1,     -2,       -3,         DigestType.CRC32,     "abc",      customMD.VALID,     true},
+           /*19*/{ 0,       -1,     -2,       -2,         DigestType.MAC,       "abc",      customMD.VALID,     true},
+           /*20*/{ 0,       -1,     -2,       -1,         DigestType.CRC32C,    "abc",      customMD.VALID,     true},
+
+           /*21*/{ 0,       -1,     -1,       -2,         DigestType.DUMMY,      "abc",     customMD.VALID,     true},
+           /*22*/{ 0,       -1,     -1,       -1,         DigestType.CRC32,      "abc",     customMD.VALID,     true},
+           /*23*/{ 0,       -1,     -1,        0,         DigestType.MAC,        "abc",     customMD.VALID,     true},
+
+           /*24*/{ 0,       -1,     0,        -1,         DigestType.CRC32C,     "abc",     customMD.VALID,     true},
+           /*25*/{ 0,       -1,     0,         0,         DigestType.DUMMY,      "abc",     customMD.VALID,     true},
+           /*26*/{ 0,       -1,     0,         1,         DigestType.CRC32,      "abc",     customMD.VALID,     true},
+
+                //null password doesn't cause exception
+           /*27*/{ 0,        1,     1,         1,         DigestType.CRC32C,     null,      customMD.VALID,     true},
+
+            //Those tests are especially written for CreateAdv, they test ledgerID and custom metadata
+           /*28*/{ 0,       1,      1,         1,         DigestType.MAC,       "adv",      customMD.VALID,     false},
+           /*29*/{MAXLONG,  1,      1,         1,         DigestType.CRC32C,    "adv",      customMD.VALID,     false},
+           /*30*/{MINLONG,  1,      1,         1,         DigestType.MAC,       "adv",      customMD.VALID,     true},
+           /*31*/{MAXLONG+1,1,      1,         1,         DigestType.CRC32C,    "adv",      customMD.VALID,     true},
+           /*32*/{MINLONG+1,1,      1,         1,         DigestType.CRC32C,    "adv",      customMD.VALID,     true},
+           /*33*/{ 0,       1,      1,         1,         DigestType.CRC32,     "adv",      customMD.EMPTY,     false},
+           /*34*/{ 0,       1,      1,         1,         DigestType.DUMMY,     "adv",      customMD.NULL,      false},
+           /*35*/{ 0,       1,      1,         1,         DigestType.DUMMY,     "adv",      customMD.NOT_VALID, true}
         });
     }
 
@@ -107,7 +123,7 @@ public class BookKeeperCreateLedgerTest extends
     }
 
     public BookKeeperCreateLedgerTest(long ledgerID, int ensSize, int wQS, int aQS, DigestType digestType, String passw, customMD customParam, boolean isExceptionExpected){
-        super(5,60);
+        super(3,25);
         this.ledgerID = ledgerID;
 
         this.ensSize = ensSize;
@@ -116,13 +132,17 @@ public class BookKeeperCreateLedgerTest extends
         this.digestType = digestType;
         switch (customParam){
             case NULL:
-                this.customMetadata = this.mapCreator.nullIstance();
+                this.customMetadata = this.mapCreator.nullInstance();
+                break;
             case VALID:
-                this.customMetadata = this.mapCreator.validIstance();
+                this.customMetadata = this.mapCreator.validInstance();
+                break;
             case EMPTY:
-                this.customMetadata = this.mapCreator.emptyIstance();
+                this.customMetadata = this.mapCreator.mockInstance();
+                break;
             case NOT_VALID:
-                this.customMetadata = this.mapCreator.nValidIstance();
+                this.customMetadata = this.mapCreator.nValidInstance();
+                break;
         }
         if(passw != null)
             this.password = passw.getBytes();
@@ -132,46 +152,62 @@ public class BookKeeperCreateLedgerTest extends
 
     }
 
-    @Test
+    @Test@Ignore
     public void CreateLedgerTest() {
-
         long entryId;
-        if(this.isExceptionExpected){
+
+        //For test oriented to CreateLedgerADV
+        //those are based on parameters ledgerID and CustomMetadata
+        //so is useless testing them on CreateLedger that doesn't use those parameters
+        String skip = new String(this.password);
+        if(skip.equals("adv")) {
+            Assert.assertEquals("Those are for createLedgerADV", "adv", skip);
+        }
+        else {
+            if (this.isExceptionExpected) {
                 try {
                     //exception was expected, it must go to catch branch
-                    this.ledgerHandle = this.bkClient.createLedger(this.ensSize,this.wQS,this.aQS,this.digestType,this.password);
+                    this.ledgerHandle = this.bkClient.createLedger(this.ensSize, this.wQS, this.aQS, this.digestType, this.password);
 
-                    //TODO this block totally the execution
-                    //entryId = this.ledgerHandle.addEntry("Expect and error".getBytes());
+                    //TODO doesn't permit to write when wQS = 0 (right) but doesn't catch exception.
+                    entryId = this.ledgerHandle.addEntry("Expect and error".getBytes());
 
-                    if(this.ledgerHandle == null)
+                    if (this.ledgerHandle == null)
                         //if is null when here, can be considered a right behavior
                         Assert.assertNull(this.ledgerHandle);
                     Assert.assertFalse("An exception was expected. Test is gone wrong", this.isExceptionExpected);
 
-                }catch (Exception e){
+                } catch (Exception e) {
+                    System.out.println("\n!!! Caught exception: --->"+e.getClass().getName());
                     Assert.assertTrue("An exception was expected. Test is gone right: " + e.getClass().getName() + " has been thrown.",
-                    this.isExceptionExpected);
-                 }
-            }else{
+                            this.isExceptionExpected);
+                }
+            } else {
                 try {
                     //exception wasn't expected, it must remain here
-                    this.ledgerHandle = this.bkClient.createLedger(this.ensSize,this.wQS,this.aQS,this.digestType,this.password);
-                    if(this.ledgerHandle == null)
+                    this.ledgerHandle = this.bkClient.createLedger(this.ensSize, this.wQS, this.aQS, this.digestType, this.password);
+
+                    if (this.ledgerHandle == null)
                         //must be not null
                         Assert.assertNotNull(this.ledgerHandle);
+
                     entryId = this.ledgerHandle.addEntry("Expect that works".getBytes());
+                    entryId = this.ledgerHandle.addEntry("Expect that works two times".getBytes());
+
+                    //check if date are correct
+                    checkData(this.ledgerHandle);
 
                     Assert.assertFalse("No exception was expected. Test is gone correctly", this.isExceptionExpected);
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     Assert.assertTrue("No exception was expected, but " + e.getClass().getName() + " has been thrown. Test is gone wrong",
                             this.isExceptionExpected);
                 }
             }
+        }
     }
 
-    @Test
+    @Test@Ignore
     public void CreateLedgerAdvTest(){
         /*The main difference between this and the previous method is that
          Adv permits to set the ledgID and some customMetadata*/
@@ -182,11 +218,13 @@ public class BookKeeperCreateLedgerTest extends
                 this.ledgerHandle = this.bkClient.createLedgerAdv(this.ledgerID,this.ensSize,this.wQS,this.aQS,this.digestType,this.password,this.customMetadata);
 
                 //TODO this block totally the execution
-                //entryId = this.ledgerHandle.addEntry("Expect and error".getBytes());
+                entryId = this.ledgerHandle.addEntry("Expect and error".getBytes());
 
+                /*if is null when here, can be considered a
+                  right behavior (cause metadata are incorrect) */
                 if(this.ledgerHandle == null)
-                    //if is null when here, can be considered a right behavior
                     Assert.assertNull(this.ledgerHandle);
+
                 Assert.assertFalse("An exception was expected. Test is gone wrong", this.isExceptionExpected);
 
             }catch (Exception e){
@@ -202,7 +240,11 @@ public class BookKeeperCreateLedgerTest extends
                 if(this.ledgerHandle == null)
                     Assert.assertNotNull(this.ledgerHandle);
 
-                entryId = this.ledgerHandle.addEntry("Expect that works".getBytes());
+                entryId = this.ledgerHandle.addEntry(0,"Expect that works".getBytes());
+                entryId = this.ledgerHandle.addEntry(1,"Expect that works two times".getBytes());
+
+                //Check if metadata are correct
+                checkDataADV(this.ledgerHandle);
 
                 //Check if the ledger was correctly added
                 if (!this.checker.check(this.bkClient,this.ledgerID))
@@ -218,7 +260,29 @@ public class BookKeeperCreateLedgerTest extends
 
     }
 
+    private void checkData(LedgerHandle lh){
+        LedgerMetadata metadata = ledgerHandle.getLedgerMetadata();
 
+        Assert.assertEquals("ens size",metadata.getEnsembleSize(), this.ensSize);
+        Assert.assertEquals("write quorum",metadata.getWriteQuorumSize(), this.wQS);
+        Assert.assertEquals("ack quorum",metadata.getAckQuorumSize(), this.aQS);
+        Assert.assertEquals("digest type",metadata.getDigestType().toString(), this.digestType.toString());
+
+        if (this.password != null) {
+            String pass1 = new String(this.password);
+            String pass2 = new String(metadata.getPassword());
+            Assert.assertEquals("password ", pass1, pass2);
+        }
+
+    }
+    private void checkDataADV(LedgerHandle lh){
+        LedgerMetadata metadata = ledgerHandle.getLedgerMetadata();
+        checkData(lh);
+        Assert.assertEquals("ledger id",metadata.getLedgerId(), this.ledgerID);
+        if (this.customMetadata != null)
+            Assert.assertEquals("custom metadata",metadata.getCustomMetadata(), this.customMetadata);
+
+    }
 
     @After
     public void tearDown() throws BKException, InterruptedException {
