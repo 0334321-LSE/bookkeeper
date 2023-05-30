@@ -35,8 +35,8 @@ public class LedgerChecker {
         // Chiudi la connessione al cluster BookKeeper
         bkAdmin.close();
         return false;
-
     }
+
     private void toArray(Iterable<Long> iterable, ArrayList<Long> list){
        for( long iterate : iterable){
            list.add(iterate);

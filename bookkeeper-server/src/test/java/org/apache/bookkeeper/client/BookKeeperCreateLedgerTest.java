@@ -281,7 +281,6 @@ public class BookKeeperCreateLedgerTest extends
         Assert.assertEquals("ledger id",metadata.getLedgerId(), this.ledgerID);
         if (this.customMetadata != null)
             Assert.assertEquals("custom metadata",metadata.getCustomMetadata(), this.customMetadata);
-
     }
 
     @After
