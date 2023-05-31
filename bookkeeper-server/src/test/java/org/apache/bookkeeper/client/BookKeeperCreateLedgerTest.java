@@ -283,8 +283,9 @@ public class BookKeeperCreateLedgerTest extends
             Assert.assertEquals("custom metadata",metadata.getCustomMetadata(), this.customMetadata);
     }
 
-    @After
-    public void tearDown() throws BKException, InterruptedException {
+    @Override @After
+    public void tearDown() throws Exception {
+        super.tearDown();
         //Close the ledger handler, bookkeeper client and the zookeeper
         if (this.ledgerHandle != null)
             this.ledgerHandle.close();

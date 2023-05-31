@@ -3,6 +3,8 @@ package org.apache.bookkeeper.bookie.storage.ldb;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.UnpooledByteBufAllocator;
+import org.apache.bookkeeper.bookie.storage.ldb.util.InvalidByteBuf;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,7 +18,9 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class WriteCachePutTest {
     private WriteCache writeCache;
-    private ByteBufAllocator byteBufAllocator;
+    private final ByteBufAllocator byteBufAllocator;
+
+    private final InvalidByteBuf invalidByteBuf;
 
     private int entrySize;
     private ByteBuf entry;
@@ -27,7 +31,7 @@ public class WriteCachePutTest {
     private enum entryType {
         NULL,
         VALID,
-        NOT_VALID,
+        INVALID,
         EMPTY
     }
 
@@ -42,6 +46,12 @@ public class WriteCachePutTest {
     public static Collection<?> getParameters(){
         return Arrays.asList(new Object[][] {
                 // ledgerID    entryID   entryType         exception
+
+                {  -1,          -1,     entryType.INVALID,   true},
+                {  -1,           0,     entryType.INVALID,   true},
+                {   0,           0,     entryType.INVALID,   true},
+                {   0,          -1,     entryType.INVALID,   true},
+
                 {  -1,          -1,     entryType.VALID,   true},
                 {  -1,           0,     entryType.VALID,   true},
                 {   0,           0,     entryType.VALID,   false},
@@ -55,7 +65,9 @@ public class WriteCachePutTest {
                 {  -1,          -1,     entryType.EMPTY,   true},
                 {  -1,           0,     entryType.EMPTY,   true},
                 {   0,           0,     entryType.EMPTY,   false},
-                {   0,          -1,     entryType.EMPTY,   true}
+                {   0,          -1,     entryType.EMPTY,   true},
+
+
         });
     }
 
@@ -64,6 +76,7 @@ public class WriteCachePutTest {
         this.entryId = entryId;
         this.isExpectedException= isExpectedException;
         byteBufAllocator = UnpooledByteBufAllocator.DEFAULT;
+        invalidByteBuf = new InvalidByteBuf();
         switch (entry){
             case NULL:
                 this.entry = null;
@@ -75,8 +88,9 @@ public class WriteCachePutTest {
             case EMPTY:
                 this.entry = this.byteBufAllocator.buffer(this.entrySize);
                 break;
-            case NOT_VALID:
+            case INVALID:
                 //TODO: think how to create an invalid instance
+                this.entry= this.invalidByteBuf;
                 break;
         }
     }

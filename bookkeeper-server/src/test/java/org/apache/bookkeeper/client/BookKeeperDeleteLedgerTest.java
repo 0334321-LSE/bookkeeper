@@ -88,9 +88,9 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
         }
     }
 
-    @After
-    public void tearDown() throws BKException, InterruptedException {
-
+    @Override @After
+    public void tearDown() throws Exception {
+        super.tearDown();
         if (this.bkClient != null)
             this.bkClient.close();
         if (this.zkc!=null)

@@ -78,8 +78,9 @@ public class BookKeeperOpenLedgerTest extends
         }
     }
 
-    @After
-    public void tearDown() throws BKException, InterruptedException {
+    @Override @After
+    public void tearDown() throws Exception {
+        super.tearDown();
         if (this.ledgerHandle != null)
             this.ledgerHandle.close();
         if (this.bkClient != null)
