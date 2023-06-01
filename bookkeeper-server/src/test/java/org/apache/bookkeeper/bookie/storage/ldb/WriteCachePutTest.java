@@ -89,7 +89,6 @@ public class WriteCachePutTest {
                 this.entry = this.byteBufAllocator.buffer(this.entrySize);
                 break;
             case INVALID:
-                //TODO: think how to create an invalid instance
                 this.entry= this.invalidByteBuf;
                 break;
         }

@@ -60,6 +60,7 @@ public class BookKeeperOpenLedgerTest extends
                 Assert.assertFalse("An exception was expected. Test is gone wrong", this.isExceptionExpected);
 
             }catch (Exception e){
+                System.out.println("An exception was expected. Test is gone right: " + e.getClass().getName() + " has been thrown.");
                 Assert.assertTrue("An exception was expected. Test is gone right: " + e.getClass().getName() + " has been thrown.",
                         this.isExceptionExpected);
             }
@@ -70,6 +71,7 @@ public class BookKeeperOpenLedgerTest extends
                 //Must be not null
                 if(null == lh) Assert.assertNotNull(lh);
                 Assert.assertFalse("No exception was expected. Test is gone correctly", this.isExceptionExpected);
+                System.out.println("No exception was expected. Test is gone correctly");
 
             }catch (Exception e){
                 Assert.assertTrue("No exception was expected, but " + e.getClass().getName() + " has been thrown. Test is gone wrong",
@@ -80,7 +82,6 @@ public class BookKeeperOpenLedgerTest extends
 
     @Override @After
     public void tearDown() throws Exception {
-        super.tearDown();
         if (this.ledgerHandle != null)
             this.ledgerHandle.close();
         if (this.bkClient != null)
