@@ -25,6 +25,13 @@
   <artifactId>bookkeeper-server</artifactId>
   <name>Apache BookKeeper :: Server</name>
   <dependencies>
+    <!--Added dependency for PIT-->
+    <dependency>
+      <groupId>org.pitest</groupId>
+      <artifactId>pitest-maven</artifactId>
+      <version>${pitest-maven-plguin.version}</version>
+      <type>maven-plugin</type>
+    </dependency>
     <dependency>
       <groupId>org.apache.bookkeeper</groupId>
       <artifactId>bookkeeper-common</artifactId>
@@ -272,7 +279,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
-          <argLine>@{argLine} --add-opens java.base/java.io=ALL-UNNAMED</argLine>
+          <argLine>${argLine} --add-opens java.base/java.io=ALL-UNNAMED</argLine>
           <trimStackTrace>false</trimStackTrace>
           <properties>
             <property>
@@ -310,6 +317,34 @@
     </plugins>
   </build>
   <profiles>
+      <!-- PIT profile for mutation coverage -->
+    <profile>
+        <id>pitProfile</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.pitest</groupId>
+                    <artifactId>pitest-maven</artifactId>
+                    <version>${pitest-maven-plguin.version}</version>
+                    <configuration>
+                      <maxMutationsPerClass>50</maxMutationsPerClass>
+                        <targetClasses>
+                            <param>org.apache.bookkeeper.client.BookKeeper</param>
+                            <param>org.apache.bookkeeper.bookie.storage.ldb.WriteCache</param>
+                        </targetClasses>
+                        <targetTests>
+                            <param>org.apache.bookkeeper.client.BookKeeperCreateLedgerTest</param>
+                            <param>org.apache.bookkeeper.client.BookKeeperDeleteLedgerTest</param>
+                            <param>org.apache.bookkeeper.client.BookKeeperOpenLedgerTest</param>
+                            <param>org.apache.bookkeeper.bookie.storage.ldb.WriteCacheGetTest</param>
+                            <param>org.apache.bookkeeper.bookie.storage.ldb.WriteCachePutTest</param>
+                        </targetTests>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+
     <profile>
       <id>jacoco-report</id>
       <build>
