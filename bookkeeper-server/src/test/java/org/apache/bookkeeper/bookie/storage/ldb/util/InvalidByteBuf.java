@@ -14,14 +14,16 @@ import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
 
 public class InvalidByteBuf extends ByteBuf {
+    public InvalidByteBuf() {
+    }
 
     private final byte[] bytes = "INVALID".getBytes();
 
     /** This is used by put to know how much are readable bytes. <br />
-     * Hardcoded a greater number compared to the effective bytes size*/
+     * Hardcoded a negative number, it hasn't meaning for bytes size*/
     @Override
     public int readableBytes() {
-        return 666;
+        return -666;
     }
 
     @Override
