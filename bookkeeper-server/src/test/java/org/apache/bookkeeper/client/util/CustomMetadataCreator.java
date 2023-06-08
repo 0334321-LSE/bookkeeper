@@ -30,8 +30,8 @@ public class CustomMetadataCreator{
         return map;
     }
 
-    public Map<String, byte[]> mockInstance() {
-        this.map = mock(Map.class);
+    public Map<String, byte[]> emptyInstance() {
+        this.map = new HashMap<>();
         return map;
     }
 }
