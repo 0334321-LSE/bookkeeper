@@ -330,10 +330,14 @@
                       <maxMutationsPerClass>50</maxMutationsPerClass>
                         <targetClasses>
                             <param>org.apache.bookkeeper.client.BookKeeper</param>
+                            <param>org.apache.bookkeeper.client.LedgerCreateOp</param>
+                            <param>org.apache.bookkeeper.client.LedgerDeleteOp</param>
+                            <param>org.apache.bookkeeper.client.LedgerOpenOp</param>
                             <param>org.apache.bookkeeper.bookie.storage.ldb.WriteCache</param>
                         </targetClasses>
                         <targetTests>
                             <param>org.apache.bookkeeper.client.BookKeeperCreateLedgerTest</param>
+                            <param>org.apache.bookkeeper.client.BookKeeperCreateLedgerAdvTest</param>
                             <param>org.apache.bookkeeper.client.BookKeeperDeleteLedgerTest</param>
                             <param>org.apache.bookkeeper.client.BookKeeperOpenLedgerTest</param>
                             <param>org.apache.bookkeeper.bookie.storage.ldb.WriteCacheGetTest</param>

@@ -3,9 +3,15 @@ package org.apache.bookkeeper.client.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Mockito.mock;
+
 
 public class CustomMetadataCreator{
+    public enum customMD {
+        NULL,
+        VALID,
+        NOT_VALID,
+        EMPTY
+    }
 
     private Map<String,byte[]> map ;
 

@@ -6,6 +6,7 @@ import org.apache.bookkeeper.client.BookKeeper.DigestType;
 import org.apache.bookkeeper.client.api.LedgerMetadata;
 import org.apache.bookkeeper.client.conf.BookKeeperClusterTestCase;
 import org.apache.bookkeeper.client.util.CustomMetadataCreator;
+import org.apache.bookkeeper.client.util.CustomMetadataCreator.customMD;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -48,12 +49,6 @@ public class BookKeeperCreateLedgerAdvTest extends
 
     private LedgerChecker checker;
 
-    private enum customMD {
-        NULL,
-        VALID,
-        NOT_VALID,
-        EMPTY
-    }
 
     @Parameterized.Parameters
     public static Collection<Object[]> getParameters() {

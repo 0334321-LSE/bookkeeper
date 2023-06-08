@@ -37,15 +37,6 @@ public class BookKeeperCreateLedgerTest extends
     private BookKeeper bkClient;
     private LedgerHandle ledgerHandle;
 
-    private final CustomMetadataCreator mapCreator = new CustomMetadataCreator();
-
-    private enum customMD {
-        NULL,
-        VALID,
-        NOT_VALID,
-        EMPTY
-    }
-
     @Parameterized.Parameters
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {

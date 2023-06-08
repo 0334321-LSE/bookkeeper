@@ -21,7 +21,7 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
     private LedgerHandle ledgerHandle;
 
     private LedgerChecker checker;
-
+    private static final long MAXLONG = Long.MAX_VALUE;
 
     @Parameterized.Parameters
     public static Collection<Object[]> getParameters()  {
@@ -29,7 +29,8 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
         return Arrays.asList(new Object[][] {
                 //ledgID            exception
         /*0*/   {0,                 false},
-        /*1*/   {150,               true}
+        /*1*/   {150,               true},
+        /*2*/   {-1,                true}
         });
     }
     @Before
@@ -55,7 +56,7 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
     public void DeleteLedgerTest() throws Exception {
         if(this.isExceptionExpected){
             /*TODO ask prof wich kind of behavior we must expect, actually
-               the ledger is still alive but it doesn't catch any exception*/
+               the created ledger is still alive but it doesn't catch any exception*/
             //try {
                 this.bkClient.deleteLedger(this.ledgerID);
                 //Check if it still exits

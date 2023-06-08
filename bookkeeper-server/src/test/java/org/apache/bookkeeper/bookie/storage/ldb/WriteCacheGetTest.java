@@ -29,30 +29,24 @@ public class WriteCacheGetTest {
 
 
     @Before
-    public void setUp() throws Exception {
-        byteBufAllocator = UnpooledByteBufAllocator.DEFAULT;
+    public void setUp() {
+        this.byteBufAllocator = UnpooledByteBufAllocator.DEFAULT;
         int entryNumber = 10;
         int entrySize = 1024;
-        writeCache = new WriteCache(byteBufAllocator, entrySize * entryNumber);
+        this.writeCache = new WriteCache(this.byteBufAllocator, entrySize * entryNumber);
 
-        entry = byteBufAllocator.buffer(entrySize);
+        this.entry = byteBufAllocator.buffer(entrySize);
 
-        entry.writeBytes("bytes into the entry".getBytes());
-       /* String input = new String(ByteBufUtil.getBytes(entry));
-        System.out.println(input);*/
+        this.entry.writeBytes("bytes into the entry".getBytes());
 
-/*
-        ByteBufUtil.writeAscii(entry, "test");
-*/
-
-        writeCache.put(ledgerId, entryId, entry);
+        this.writeCache.put(ledgerId, entryId, entry);
     }
 
     @After
     public void tearDown() throws Exception {
-        writeCache.clear();
-        entry.release();
-        writeCache.close();
+        this.writeCache.clear();
+        this.entry.release();
+        this.writeCache.close();
     }
 
     //Input parameters
