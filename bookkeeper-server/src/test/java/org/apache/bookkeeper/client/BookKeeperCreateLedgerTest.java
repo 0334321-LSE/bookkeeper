@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import org.apache.bookkeeper.client.util.LedgerChecker;
+import org.junit.runners.model.TestTimedOutException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,20 +43,19 @@ public class BookKeeperCreateLedgerTest extends
         return Arrays.asList(new Object[][] {
          //For enS, wQS, aQS has been executed multidimensional selection, for the other unidimensional.
          //              enS     wQS        aQS         digestType           passwd         exception
-
-           // /*0*/{        1,      0,        -1,         DigestType.CRC32C,    "abc",           true},
-           // /*1*/{        1,      0,         0,         DigestType.DUMMY,     "abc",           true},
+          //  /*0*/{        1,      0,        -1,         DigestType.CRC32C,    "abc",           true},
+          //  /*1*/{        1,      0,         0,         DigestType.DUMMY,     "abc",           true},
             /*2*/{        1,      0,         1,         DigestType.CRC32,     "abc",           true},
 
             /*3*/{        1,      1,         0,         DigestType.MAC,       "abc",           false},
             /*4*/{        1,      1,         1,         DigestType.CRC32C,    "abc",           false},
             /*5*/{        1,      1,         2,         DigestType.DUMMY,     "abc",           true},
 
-         //   /*6*/{        1,      2,         1,         DigestType.CRC32,     "abc",           true},
-         //   /*7*/{        1,      2,         2,         DigestType.MAC,       "abc",           true},
+          //  /*6*/{        1,      2,         1,         DigestType.CRC32,     "abc",           true},
+          //  /*7*/{        1,      2,         2,         DigestType.MAC,       "abc",           true},
             /*8*/{        1,      2,         3,         DigestType.CRC32C,    "abc",           true},
 
-         //   /*9*/{        0,     -1,       -2,          DigestType.MAC,       "abc",           true},
+         //  /*9*/{        0,     -1,       -2,          DigestType.MAC,       "abc",           true},
          //  /*10*/{        0,     -1,       -1,          DigestType.CRC32C,    "abc",           true},
            /*11*/{        0,     -1,        0,          DigestType.DUMMY,     "abc",           true},
 
@@ -79,8 +79,10 @@ public class BookKeeperCreateLedgerTest extends
            /*25*/{        -1,     0,         0,         DigestType.DUMMY,      "abc",          true},
            /*26*/{        -1,     0,         1,         DigestType.CRC32,      "abc",          true},
 
-                //null password doesn't cause exception
+
            /*27*/{         1,     1,         1,         DigestType.CRC32C,     null,           true},
+           /*28*/{         1,     1,         1,         DigestType.CRC32C,     "",             false},
+
 
         });
     }
@@ -113,7 +115,7 @@ public class BookKeeperCreateLedgerTest extends
     }
 
     @Test
-    public void CreateLedgerTest() {
+    public void CreateLedgerTest()  {
         long entryId;
 
         if (this.isExceptionExpected) {
@@ -151,7 +153,7 @@ public class BookKeeperCreateLedgerTest extends
 
                 Assert.assertFalse("No exception was expected. Test is gone correctly", this.isExceptionExpected);
 
-            } catch (Exception e) {
+            } catch (IllegalArgumentException | InterruptedException | BKException e) {
                 Assert.assertTrue("No exception was expected, but " + e.getClass().getName() + " has been thrown. Test is gone wrong",
                         this.isExceptionExpected);
             }
@@ -177,13 +179,7 @@ public class BookKeeperCreateLedgerTest extends
 
     @Override @After
     public void tearDown() throws Exception {
-        super.tearDown();
-/*        //Close the ledger handler, bookkeeper client and the zookeeper
-        if (this.ledgerHandle != null)
-            this.ledgerHandle.close();
-        if (this.bkClient != null)
-            this.bkClient.close();
-        if (zkc!=null)
-            zkc.close();*/
+            super.tearDown();
+
     }
 }

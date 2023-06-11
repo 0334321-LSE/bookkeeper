@@ -65,7 +65,7 @@ public class WriteCachePutTest {
                 {  -1,          -1,     entryType.EMPTY,   true},
                 {  -1,           0,     entryType.EMPTY,   true},
                 {   0,           0,     entryType.EMPTY,   false},
-                {   0,          -1,     entryType.EMPTY,   true},
+                {   0,          -1,     entryType.EMPTY,   true}
 
 
         });

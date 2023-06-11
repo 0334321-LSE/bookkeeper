@@ -33,8 +33,14 @@ public class BookKeeperOpenLedgerTest extends
         return Arrays.asList(new Object[][] {
             //ledgID            DigestType          password          customMetadata        exception
     /*0*/   {1,                 DigestType.DUMMY,   "aaa".getBytes(), customMD.VALID,       false},
-    /*1*/   {0,                 DigestType.MAC,     "abc".getBytes(), customMD.VALID,       true},
-    /*2*/   {0,                 DigestType.CRC32C,   null,            customMD.VALID,       true}
+    /*1*/   {0,                 DigestType.DUMMY,   "aaa".getBytes(), customMD.VALID,       false},
+    /*2*/   {0,                 DigestType.MAC,     "abc".getBytes(), customMD.VALID,       true},
+    ///*3*/ {0,                 DigestType.MAC,     "aaa".getBytes(), customMD.VALID,       true},
+             //Aggiunti successivamente
+    /*4*/   {0,                 DigestType.DUMMY,   null,            customMD.VALID,       true},
+    /*5*/   {0,                 DigestType.DUMMY,   "".getBytes(),   customMD.VALID,       true},
+
+
         });
     }
 
@@ -105,7 +111,6 @@ public class BookKeeperOpenLedgerTest extends
     //Added for PIT
     @Test
     public void OpenLedgerWithMetadataTest() throws BKException, InterruptedException {
-        //TODO, add a ledger with metadata and open it
         this.ledgerHandle = this.bkClient.createLedgerAdv(3,2,1, BookKeeper.DigestType.DUMMY,"aaa".getBytes(),this.customMetadata);
 
         if(this.isExceptionExpected){

@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.pitest</groupId>
       <artifactId>pitest-maven</artifactId>
-      <version>${pitest-maven-plguin.version}</version>
+      <version>${pitest-maven-plugin.version}</version>
       <type>maven-plugin</type>
     </dependency>
     <dependency>
@@ -279,8 +279,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
-   <!--     <configuration>
-          <argLine>${argLine} &#45;&#45;add-opens java.base/java.io=ALL-UNNAMED</argLine>
+<!--        <configuration>
+
+          <argLine>  ${argLine} &#45;&#45;add-opens java.base/java.io=ALL-UNNAMED</argLine>
+          <argLine>&#45;&#45;add-opens java.base/java.io=ALL-UNNAMED</argLine>
+          <redirectTestOutputToFile>${redirectTestOutputToFile}</redirectTestOutputToFile>
           <trimStackTrace>false</trimStackTrace>
           <properties>
             <property>
@@ -328,7 +331,7 @@
         <ba-dua.version>0.8.1-SNAPSHOT</ba-dua.version>
         <!--<argLine-fromTop> -Xmx2G -Djava.net.preferIPv4Stack=true
           -Dio.netty.leakDetection.level=paranoid ${test.additional.args}></argLine-fromTop>-->
-       <!--<argLine> -javaagent:target/dependency/ba-dua-agent-rt-${ba-dua.version}-all.jar -Doutput.file=${project.build.directory}/badua.ser</argLine>-->
+       <!--<argLine>-javaagent:target/dependency/ba-dua-agent-rt-${ba-dua.version}-all.jar -Doutput.file=${project.build.directory}/badua.ser</argLine>-->
       </properties>
       <dependencies>
         <dependency>
@@ -339,6 +342,15 @@
       </dependencies>
       <build>
         <plugins>
+<!--          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven-surefire-plugin.version}</version>
+            <configuration>
+              <redirectTestOutputToFile>${redirectTestOutputToFile}</redirectTestOutputToFile>
+              <argLine>${argLine}</argLine>
+            </configuration>
+          </plugin>-->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
@@ -399,7 +411,7 @@
                 <plugin>
                     <groupId>org.pitest</groupId>
                     <artifactId>pitest-maven</artifactId>
-                    <version>${pitest-maven-plguin.version}</version>
+                    <version>${pitest-maven-plugin.version}</version>
                     <configuration>
                       <maxMutationsPerClass>50</maxMutationsPerClass>
                         <targetClasses>

@@ -7,10 +7,10 @@ import java.util.Set;
 
 public class InvalidMap<K, V> implements Map<K, V> {
 
-    private Map<String, Double> map;
+    private Map<String, Double> doubleMap;
 
     public InvalidMap(){
-        this.map= new HashMap<>();
+        this.doubleMap = new HashMap<>();
     }
 
 /** <p>I try to overwrite put: now it writes a double (so not bytes) mandatory <br />
@@ -18,20 +18,20 @@ public class InvalidMap<K, V> implements Map<K, V> {
          */
     @Override
     public Object put(Object key, Object value) {
-        String invalidTypeKey =  "Not bytes";
+        String invalidTypeKey = key.toString();
         double invalidValue = 66.6;
-        return map.put(invalidTypeKey,invalidValue);
+        return doubleMap.put(invalidTypeKey,invalidValue);
     }
 
     @Override
     public V get(Object key) {
-        return (V) map.get(key);
+        return (V) doubleMap.get(key);
     }
 
 
     @Override
     public int size() {
-        return 0;
+        return 1;
     }
 
     @Override

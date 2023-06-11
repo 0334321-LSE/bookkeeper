@@ -26,7 +26,7 @@ public class CustomMetadataCreator{
         //TODO SEEMS THAT THIS CREATE PROBLEM, CLIENT DOESN'T SEE LEDGER WHEN I
         // PASS A VALID INSTANCE
         this.map = new HashMap<>();
-        this.map.put("metadata1", "1".getBytes());
+        this.map.put("Metadata1", "54321".getBytes());
         this.map.put("metadata2", "2".getBytes());
         return map;
     }

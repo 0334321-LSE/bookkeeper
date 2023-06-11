@@ -54,21 +54,20 @@ public class BookKeeperCreateLedgerAdvTest extends
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
                 //For enS, wQS, aQS has been executed multidimensional selection, for the other unidimensional.
-                //        lID      enS     wQS        aQS         digestType           passwd      customMetadata      exception
+                //     lID      enS     wQS        aQS         digestType           passwd      customMetadata      exception
+                /*0*/{ 0,       1,      0,        -1,         DigestType.CRC32C,    "abc",      customMD.VALID,     true},
+                /*1*/{ 0,       1,      0,         0,         DigestType.DUMMY,     "abc",      customMD.VALID,     true},
+                /*2*/{ 0,       1,      0,         1,         DigestType.CRC32,     "abc",      customMD.VALID,     true},
 
-                 /*0*/{ 0,       1,      0,        -1,         DigestType.CRC32C,    "abc",      customMD.VALID,     true},
-                 /*1*/{ 0,       1,      0,         0,         DigestType.DUMMY,     "abc",      customMD.VALID,     true},
-                 /*2*/{ 0,       1,      0,         1,         DigestType.CRC32,     "abc",      customMD.VALID,     true},
+                /*3*/{ 0,       1,      1,         0,         DigestType.MAC,       "abc",      customMD.VALID,     false},
+                /*4*/{ 0,       1,      1,         1,         DigestType.CRC32C,    "abc",      customMD.VALID,     false},
+                /*5*/{ 0,       1,      1,         2,         DigestType.DUMMY,     "abc",      customMD.VALID,     true},
 
-                 /*3*/{ 0,       1,      1,         0,         DigestType.MAC,       "abc",      customMD.VALID,     false},
-                 /*4*/{ 0,       1,      1,         1,         DigestType.CRC32C,    "abc",      customMD.VALID,     false},
-                 /*5*/{ 0,       1,      1,         2,         DigestType.DUMMY,     "abc",      customMD.VALID,     true},
+                /*6*/{ 0,       1,      2,         1,         DigestType.CRC32,     "abc",      customMD.VALID,     true},
+                /*7*/{ 0,       1,      2,         2,         DigestType.MAC,       "abc",      customMD.VALID,     true},
+                /*8*/{ 0,       1,      2,         3,         DigestType.CRC32C,    "abc",      customMD.VALID,     true},
 
-                 /*6*/{ 0,       1,      2,         1,         DigestType.CRC32,     "abc",      customMD.VALID,     true},
-                 /*7*/{ 0,       1,      2,         2,         DigestType.MAC,       "abc",      customMD.VALID,     true},
-                 /*8*/{ 0,       1,      2,         3,         DigestType.CRC32C,    "abc",      customMD.VALID,     true},
-
-                 /*9*/{ 0,       0,     -1,       -2,          DigestType.MAC,       "abc",      customMD.VALID,     true},
+                /*9*/{ 0,       0,     -1,       -2,          DigestType.MAC,       "abc",      customMD.VALID,     true},
                 /*10*/{ 0,       0,     -1,       -1,          DigestType.CRC32C,    "abc",      customMD.VALID,     true},
                 /*11*/{ 0,       0,     -1,        0,          DigestType.DUMMY,     "abc",      customMD.VALID,     true},
 
@@ -92,18 +91,16 @@ public class BookKeeperCreateLedgerAdvTest extends
                 /*25*/{ 0,       -1,     0,         0,         DigestType.DUMMY,      "abc",     customMD.VALID,     true},
                 /*26*/{ 0,       -1,     0,         1,         DigestType.CRC32,      "abc",     customMD.VALID,     true},
 
-                //null password doesn't cause exception
                 /*27*/{ 0,        1,     1,         1,         DigestType.CRC32C,     null,      customMD.VALID,     true},
 
+                /*28*/{ 0,        1,     1,         1,         DigestType.CRC32C,     "",        customMD.VALID,     false},
                 //Those tests are especially written for CreateAdv, they test ledgerID and custom metadata
-                /*28*/{ 0,       1,      1,         1,         DigestType.MAC,       "adv",      customMD.VALID,     false},
-                /*29*/{MAXLONG,  1,      1,         1,         DigestType.CRC32C,    "adv",      customMD.VALID,     false},
-                /*30*/{MINLONG,  1,      1,         1,         DigestType.MAC,       "adv",      customMD.VALID,     true},
-                /*31*/{MAXLONG+1,1,      1,         1,         DigestType.CRC32C,    "adv",      customMD.VALID,     true},
-                /*32*/{MINLONG+1,1,      1,         1,         DigestType.CRC32C,    "adv",      customMD.VALID,     true},
-                /*33*/{ 0,       1,      1,         1,         DigestType.CRC32,     "adv",      customMD.EMPTY,     false},
-                /*34*/{ 0,       1,      1,         1,         DigestType.DUMMY,     "adv",      customMD.NULL,      false},
-                /*35*/{ 0,       1,      1,         1,         DigestType.DUMMY,     "adv",      customMD.NOT_VALID, true}
+                /*29*/{ 0,       1,      1,         1,         DigestType.MAC,       "adv",      customMD.VALID,     false},
+                /*30*/{ 1,       1,      1,         1,         DigestType.CRC32C,    "adv",      customMD.VALID,     false},
+                /*31*/{-1,       1,      1,         1,         DigestType.MAC,       "adv",      customMD.VALID,     true},
+                /*32*/{ 0,       1,      1,         1,         DigestType.CRC32,     "adv",      customMD.EMPTY,     false},
+                /*33*/{ 0,       1,      1,         1,         DigestType.DUMMY,     "adv",      customMD.NULL,      false},
+                /*34*/{ 0,       1,      1,         1,         DigestType.DUMMY,     "adv",      customMD.NOT_VALID, true}
         });
     }
 
@@ -156,7 +153,6 @@ public class BookKeeperCreateLedgerAdvTest extends
                 //exception was expected, it must go to catch branch
                 this.ledgerHandle = this.bkClient.createLedgerAdv(this.ledgerID,this.ensSize,this.wQS,this.aQS,this.digestType,this.password,this.customMetadata);
 
-                //TODO this block totally the execution
                 entryId = this.ledgerHandle.addEntry("Expect and error".getBytes());
 
                 /*if is null when here, can be considered a

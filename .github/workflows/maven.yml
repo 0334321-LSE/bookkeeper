@@ -11,22 +11,23 @@ name: Java CI with Maven
 on:
   push:
     branches:
-      -isw2-testing
-      -isw2-testing-dev
+      - master
+      - isw2-testing
+      - isw2-testing-dev
   pull_request:
-    branches: [ "isw2-testing" ]
+    branches: [ "master" ]
 
 jobs:
-  install:
+  build:
 
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 17
+      - name: Set up JDK 20
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '20'
           distribution: 'temurin'
           cache: maven
       - name: Install phase with Maven

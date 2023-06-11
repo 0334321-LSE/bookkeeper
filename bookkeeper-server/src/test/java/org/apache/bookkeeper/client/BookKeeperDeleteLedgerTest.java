@@ -30,6 +30,7 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
                 //ledgID            exception
         /*0*/   {0,                 false},
         /*1*/   {150,               true},
+                //aggiunto successivamente
         /*2*/   {-1,                true}
         });
     }
@@ -55,9 +56,8 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
     @Test
     public void DeleteLedgerTest() throws Exception {
         if(this.isExceptionExpected){
-            /*TODO ask prof wich kind of behavior we must expect, actually
-               the created ledger is still alive but it doesn't catch any exception*/
-            //try {
+
+            try {
                 this.bkClient.deleteLedger(this.ledgerID);
                 //Check if it still exits
                 if (!checker.check(this.bkClient, this.ledgerHandle.getId()))
@@ -67,10 +67,10 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
 
                 //   Assert.assertFalse("An exception was expected. Test is gone wrong", this.isExceptionExpected);
 
-            /*}catch (Exception e){
+            }catch (Exception e){
                 Assert.assertTrue("An exception was expected. Test is gone right: " + e.getClass().getName() + " has been thrown.",
                         this.isExceptionExpected);
-            }*/
+            }
         }else{
             try {
                 long deletedID = this.ledgerHandle.getId();
