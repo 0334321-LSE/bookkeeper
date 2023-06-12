@@ -56,7 +56,7 @@ public class BookKeeperOpenLedgerTest extends
     }
 
     public BookKeeperOpenLedgerTest(long ledgerID, BookKeeper.DigestType digestType, byte[] password,customMD customParam, boolean isExceptionExpected)  {
-        super(5, 180);
+        super(5, 60);
         this.ledgerID = ledgerID;
         this.digestType = digestType;
         this.password = password;

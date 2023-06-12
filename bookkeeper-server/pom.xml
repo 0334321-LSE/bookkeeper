@@ -435,8 +435,12 @@
         </build>
     </profile>
 
+    <!-- jacocoProfile -->
     <profile>
-      <id>jacoco-report</id>
+      <id>jacocoProfile</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
       <build>
         <plugins>
           <plugin>

@@ -1111,6 +1111,7 @@
     </plugins>
   </build>
   <profiles>
+    <!-- jacoco profile -->
     <profile>
       <id>jacocoProfile</id>
       <activation>

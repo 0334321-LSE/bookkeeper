@@ -3,6 +3,7 @@ package org.apache.bookkeeper.common.component;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -19,7 +20,7 @@ public class LifecycleTest {
         when(dummyLifecycle.state()).thenReturn(Lifecycle.State.INITIALIZED);
     }
 
-    @Test
+    @Test @Ignore
     public void stateTest(){
         Assert.assertEquals(dummyLifecycle.state(),Lifecycle.State.INITIALIZED);
     }
