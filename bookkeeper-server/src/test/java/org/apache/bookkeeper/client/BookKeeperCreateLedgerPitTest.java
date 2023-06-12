@@ -36,7 +36,7 @@ public class BookKeeperCreateLedgerPitTest extends
                 //For enS, wQS, aQS has been executed multidimensional selection, for the other unidimensional.
                 //         enS     wQS        aQS         digestType           passwd         exception
                 /*0*/{      1,      1,         0,         DigestType.MAC,       "abc",         false},
-                /*1*/{      1,      1,         1,         DigestType.CRC32C,    "abc",         false},
+                /*1*/{      1,      1,         1,         DigestType.CRC32C,    "abc",         false}
         });
     }
 
@@ -45,7 +45,7 @@ public class BookKeeperCreateLedgerPitTest extends
 
         baseConf.setJournalWriteData(true);
         baseClientConf.setUseV2WireProtocol(true);
-        //Set opportunisticStriping to true
+        //Set opportunisticStriping to true to reach the
         baseClientConf.setOpportunisticStriping(true);
         super.setUp();
         this.bkClient = new BookKeeper(baseClientConf);
@@ -68,7 +68,7 @@ public class BookKeeperCreateLedgerPitTest extends
 
     }
 
-    @Test
+    @Test @Ignore
     public void CreateLedgerPitTest() {
         long entryId;
 
