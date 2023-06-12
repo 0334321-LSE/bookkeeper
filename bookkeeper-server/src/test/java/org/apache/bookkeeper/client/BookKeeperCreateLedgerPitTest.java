@@ -3,10 +3,7 @@ package org.apache.bookkeeper.client;
 import org.apache.bookkeeper.client.BookKeeper.DigestType;
 import org.apache.bookkeeper.client.api.LedgerMetadata;
 import org.apache.bookkeeper.client.conf.BookKeeperClusterTestCase;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -56,7 +53,7 @@ public class BookKeeperCreateLedgerPitTest extends
     }
 
     public BookKeeperCreateLedgerPitTest(int ensSize, int wQS, int aQS, DigestType digestType, String passw, boolean isExceptionExpected) {
-        super(3, 60);
+        super(2, 60);
 
         this.ensSize = ensSize;
         this.wQS = wQS;

@@ -323,15 +323,15 @@
   <profiles>
     <!-- BaDua profile -->
     <profile>
-      <id>BaDuaProfile</id>
+      <id>baduaProfile</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <ba-dua.version>0.8.1-SNAPSHOT</ba-dua.version>
+        <ba-dua.version>0.6.0</ba-dua.version>
         <!--<argLine-fromTop> -Xmx2G -Djava.net.preferIPv4Stack=true
           -Dio.netty.leakDetection.level=paranoid ${test.additional.args}></argLine-fromTop>-->
-       <!--<argLine>-javaagent:target/dependency/ba-dua-agent-rt-${ba-dua.version}-all.jar -Doutput.file=${project.build.directory}/badua.ser</argLine>-->
+       <argLine>-javaagent:target/dependency/ba-dua-agent-rt-${ba-dua.version}-all.jar -Doutput.file=${project.build.directory}/badua.ser</argLine>
       </properties>
       <dependencies>
         <dependency>
@@ -392,7 +392,7 @@
                     <argument>${project.build.outputDirectory}</argument>
                     <argument>-show-classes</argument>
                     <argument>-show-methods</argument>
-                    <argument>-xml</argument>
+                    <argument>-xml</argument>m
                     <argument>${project.build.directory}/badua.xml</argument>
                   </arguments>
                 </configuration>
@@ -456,7 +456,7 @@
               </execution>
               <execution>
                 <id>report</id>
-                <phase>test</phase>
+                <phase>verify</phase>
                 <goals>
                   <goal>report</goal>
                 </goals>

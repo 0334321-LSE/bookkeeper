@@ -105,7 +105,7 @@
     </developer>
   </developers>
   <properties>
-    <argLine>-Xmx2G -Djava.net.preferIPv4Stack=true -Dio.netty.leakDetection.level=paranoid ${test.additional.args}</argLine>
+    <!--<argLine>-Xmx2G -Djava.net.preferIPv4Stack=true -Dio.netty.leakDetection.level=paranoid ${test.additional.args}</argLine>-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <javac.target>1.8</javac.target>
@@ -216,7 +216,7 @@
     <rxjava.version>3.0.1</rxjava.version>
     <maven-failsafe-plugin.version>3.0.0-M6</maven-failsafe-plugin.version>
     <awaitility.version>4.0.3</awaitility.version>
-    <ba-dua.version>0.8.1-SNAPSHOT</ba-dua.version>
+    <ba-dua.version>0.6</ba-dua.version>
   </properties>
 
   <!-- dependency definitions -->
@@ -878,11 +878,11 @@
     </extensions>
     <pluginManagement>
       <plugins>
-        <plugin>
+     <!--   <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${jacoco-maven-plugin.version}</version>
-        </plugin>
+        </plugin>-->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
@@ -943,7 +943,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
-          <argLine>${argLine}</argLine>
           <redirectTestOutputToFile>${redirectTestOutputToFile}</redirectTestOutputToFile>
           <forkCount>${forkCount.variable}</forkCount>
           <reuseForks>true</reuseForks>

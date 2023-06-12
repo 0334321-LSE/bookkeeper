@@ -98,7 +98,7 @@ public class BookKeeperCreateLedgerTest extends
     }
 
     public BookKeeperCreateLedgerTest( int ensSize, int wQS, int aQS, DigestType digestType, String passw, boolean isExceptionExpected){
-        super(3,60);
+        super(2,60);
 
 
         this.ensSize = ensSize;

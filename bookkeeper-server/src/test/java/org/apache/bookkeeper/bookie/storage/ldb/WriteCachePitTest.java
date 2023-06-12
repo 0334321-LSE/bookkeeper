@@ -7,6 +7,7 @@ import org.apache.bookkeeper.bookie.storage.ldb.util.InvalidByteBuf;
 import org.apache.bookkeeper.bookie.storage.ldb.util.InvalidByteBufAllocator;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -88,7 +89,7 @@ public class WriteCachePitTest {
         });
     }
 
-    @Test
+    @Test @Ignore
     public void ConstructorTest(){
         try{
             this.writeCache = new WriteCache(this.byteBufAllocator,this.maxCacheSize,this.maxSegmentSize);

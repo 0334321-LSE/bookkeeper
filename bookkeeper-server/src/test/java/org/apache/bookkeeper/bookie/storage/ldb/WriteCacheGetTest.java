@@ -2,7 +2,6 @@ package org.apache.bookkeeper.bookie.storage.ldb;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import org.junit.After;
 import org.junit.Assert;
@@ -25,7 +24,9 @@ public class WriteCacheGetTest {
     private final long entryId = 1;
     private final boolean isValidLedgerId;
     private final boolean isValidEntryId;
-    private final boolean isExceptionExpected;
+
+    //True as positive result, false as negative
+    private final boolean expectedResult;
 
 
     @Before
@@ -53,18 +54,18 @@ public class WriteCacheGetTest {
     @Parameterized.Parameters
     public static Collection<?> getParameters(){
         return Arrays.asList(new Object[][] {
-                // ledgerID     entryID     exception
-                {  true,        true,       false},
-                {  true,        false,      true},
-                {  false,       true,       true},
-                {  false,       false,      true}
+                // ledgerID     entryID     result
+                {  true,        true,       true},
+                {  true,        false,      false},
+                {  false,       true,       false},
+                {  false,       false,      false}
         });
     }
 
-    public WriteCacheGetTest(boolean isLedgerValid, boolean isEntryValid , boolean isExceptionExpected){
+    public WriteCacheGetTest(boolean isLedgerValid, boolean isEntryValid , boolean expectedResult){
         this.isValidLedgerId = isLedgerValid;
         this.isValidEntryId = isEntryValid;
-        this.isExceptionExpected = isExceptionExpected;
+        this.expectedResult = expectedResult;
     }
 
     @Test
@@ -77,22 +78,17 @@ public class WriteCacheGetTest {
         if(!this.isValidLedgerId) actualLedgerId++;
         if(!this.isValidEntryId) actualEntryId++;
 
-        try{
-            System.out.println("validLedgerID: "+this.ledgerId  + "\t|\t actualLedgerID: "+actualLedgerId);
-            System.out.println("validEntryID:  "+ this.entryId  + "\t|\t actualEntryID:  "+actualEntryId);
-            System.out.println("----------------------------------------");
-            result = writeCache.get(actualLedgerId, actualEntryId);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            Assert.assertTrue("Caught exception",this.isExceptionExpected);
-        }
 
-        if(!this.isExceptionExpected){
+        System.out.println("validLedgerID: "+this.ledgerId  + "\t|\t actualLedgerID: "+actualLedgerId);
+        System.out.println("validEntryID:  "+ this.entryId  + "\t|\t actualEntryID:  "+actualEntryId);
+        System.out.println("----------------------------------------");
+        result = writeCache.get(actualLedgerId, actualEntryId);
+
+
+        if(this.expectedResult){
             Assert.assertEquals(result, entry);
         }
         else{
-
             Assert.assertNull(result);
         }
     }

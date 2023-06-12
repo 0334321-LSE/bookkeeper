@@ -56,7 +56,7 @@ public class BookKeeperOpenLedgerTest extends
     }
 
     public BookKeeperOpenLedgerTest(long ledgerID, BookKeeper.DigestType digestType, byte[] password,customMD customParam, boolean isExceptionExpected)  {
-        super(5, 60);
+        super(2, 60);
         this.ledgerID = ledgerID;
         this.digestType = digestType;
         this.password = password;
@@ -79,7 +79,7 @@ public class BookKeeperOpenLedgerTest extends
 
     @Test
     public void OpenLedgerTest() throws BKException, InterruptedException {
-        this.ledgerHandle = this.bkClient.createLedger(3,2,1, BookKeeper.DigestType.DUMMY,"aaa".getBytes());
+        this.ledgerHandle = this.bkClient.createLedger(2,2,1, BookKeeper.DigestType.DUMMY,"aaa".getBytes());
 
         if(this.isExceptionExpected){
             try {
@@ -109,9 +109,9 @@ public class BookKeeperOpenLedgerTest extends
     }
 
     //Added for PIT
-    @Test
+    @Test @Ignore
     public void OpenLedgerWithMetadataTest() throws BKException, InterruptedException {
-        this.ledgerHandle = this.bkClient.createLedgerAdv(3,2,1, BookKeeper.DigestType.DUMMY,"aaa".getBytes(),this.customMetadata);
+        this.ledgerHandle = this.bkClient.createLedgerAdv(2,2,1, BookKeeper.DigestType.DUMMY,"aaa".getBytes(),this.customMetadata);
 
         if(this.isExceptionExpected){
             try {

@@ -42,13 +42,13 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
         this.checker = new LedgerChecker();
         // creating a ledger and adding dummy entry
         this.bkClient = new BookKeeper(baseClientConf);
-        this.ledgerHandle = this.bkClient.createLedger(3,1,1, BookKeeper.DigestType.CRC32,"aaa".getBytes());
+        this.ledgerHandle = this.bkClient.createLedger(2,1,1, BookKeeper.DigestType.CRC32,"aaa".getBytes());
         this.ledgerHandle.addEntry("some bytes".getBytes());
 
     }
 
     public BookKeeperDeleteLedgerTest(long ledgerID, boolean expectedResult) {
-        super(5, 60);
+        super(2, 60);
         this.ledgerID = ledgerID;
         this.isExceptionExpected = expectedResult;
     }
