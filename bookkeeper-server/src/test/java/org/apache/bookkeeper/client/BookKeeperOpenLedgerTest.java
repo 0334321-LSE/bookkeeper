@@ -109,7 +109,7 @@ public class BookKeeperOpenLedgerTest extends
     }
 
     //Added for PIT
-    @Test @Ignore
+    @Test
     public void OpenLedgerWithMetadataTest() throws BKException, InterruptedException {
         this.ledgerHandle = this.bkClient.createLedgerAdv(2,2,1, BookKeeper.DigestType.DUMMY,"aaa".getBytes(),this.customMetadata);
 

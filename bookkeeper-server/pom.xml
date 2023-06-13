@@ -426,8 +426,10 @@
                             <param>org.apache.bookkeeper.client.BookKeeperCreateLedgerAdvTest</param>
                             <param>org.apache.bookkeeper.client.BookKeeperDeleteLedgerTest</param>
                             <param>org.apache.bookkeeper.client.BookKeeperOpenLedgerTest</param>
+                            <param>org.apache.bookkeeper.client.BookKeeperCreateLedgerPitTest</param>
                             <param>org.apache.bookkeeper.bookie.storage.ldb.WriteCacheGetTest</param>
                             <param>org.apache.bookkeeper.bookie.storage.ldb.WriteCachePutTest</param>
+                            <param>org.apache.bookkeeper.bookie.storage.ldb.WriteCacheAddedTest</param>
                         </targetTests>
                     </configuration>
                 </plugin>

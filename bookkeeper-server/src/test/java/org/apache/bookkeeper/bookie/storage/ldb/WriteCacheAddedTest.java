@@ -7,41 +7,49 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-public class WriteCacheJacocoTest {
+/** Here there are some tests added to increment jacoco coverage and for killing some mutation */
+public class WriteCacheAddedTest {
     private WriteCache writeCache;
     private final ByteBufAllocator byteBufAllocator;
 
     private int entrySize;
     private ByteBuf entry;
-    private final boolean expectedResult;
+
 
     @Before
     public void setUp() throws Exception {
-        int entryNumber = 10;
+        int entryNumber = 2;
         this.entrySize = 64;
         writeCache = new WriteCache(byteBufAllocator, entrySize * entryNumber);
     }
 
-    public WriteCacheJacocoTest() {
+    public WriteCacheAddedTest() {
         this.byteBufAllocator = UnpooledByteBufAllocator.DEFAULT;
         this.entry = this.byteBufAllocator.buffer(this.entrySize);
-        this.entry.writeBytes("Entry for better jacoco results".getBytes());
-        this.expectedResult = true;
+        this.entry.writeBytes("RHEngb7GUMiIrVIRPi44gMjNsSgNO63L5bGy6oFNhBtKk0XDQ1YIIvEROrbUGD20".getBytes());
+
     }
 
     @Test
-    public void PutTest(){
+    public void PutDifferentOrderTest(){
         boolean putResult;
 
             this.writeCache.put(0,1,this.entry);
             putResult = this.writeCache.put(0,0,this.entry);
 
-            //If is expected exception, put must return false
-            // otherwise if it isn't expected, put must return true
-            System.out.println("Expected result: "+this.expectedResult +"\t|\tResult: "+putResult);
+            System.out.println("Expected result: "+ true +"\t|\tResult: "+putResult);
             System.out.println("----------------------------------------");
-            Assert.assertEquals(this.expectedResult,putResult);
+            Assert.assertTrue(putResult);
+    }
+    @Test
+    public void PutIntoFullCacheTest(){
+        boolean putResult;
+        this.writeCache.put(0,0,this.entry);
+        this.writeCache.put(0,1,this.entry);
+        putResult = this.writeCache.put(0,2,this.entry);
+        System.out.println("Expected result: "+ false +"\t|\tResult: "+putResult);
+        System.out.println("----------------------------------------");
+        Assert.assertFalse(putResult);
     }
 
     @After
