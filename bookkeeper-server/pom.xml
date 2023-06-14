@@ -406,6 +406,9 @@
     <!-- PIT profile for mutation coverage -->
     <profile>
         <id>pitProfile</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
         <build>
             <plugins>
                 <plugin>
