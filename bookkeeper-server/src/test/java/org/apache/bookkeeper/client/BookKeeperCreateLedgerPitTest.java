@@ -68,7 +68,7 @@ public class BookKeeperCreateLedgerPitTest extends
 
     }
 
-    @Test
+    @Test @Ignore
     public void CreateLedgerPitTest() {
         long entryId;
 

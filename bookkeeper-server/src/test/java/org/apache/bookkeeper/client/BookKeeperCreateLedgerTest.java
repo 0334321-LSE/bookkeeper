@@ -2,20 +2,17 @@ package org.apache.bookkeeper.client;
 
 
 import org.apache.bookkeeper.client.BookKeeper.DigestType;
-
 import org.apache.bookkeeper.client.api.LedgerMetadata;
 import org.apache.bookkeeper.client.conf.BookKeeperClusterTestCase;
-import org.apache.bookkeeper.client.util.CustomMetadataCreator;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import org.apache.bookkeeper.client.util.LedgerChecker;
-import org.junit.runners.model.TestTimedOutException;
-
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
 
 
 @RunWith(Parameterized.class)

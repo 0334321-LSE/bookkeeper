@@ -1,0 +1,26 @@
+name: badua-coverage
+on:
+  push:
+    branches:
+      - master
+      - isw2-testing-dev
+  pull_request:
+    branches: ["master"]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: 8
+          distribution: 'temurin'
+      - name: GenerateSer
+        run: mvn verify -P baduaProfile
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: badua-ser
+          path: bookkeeper-server/target/badua.ser
+          if-no-files-found: error

@@ -216,7 +216,7 @@
     <rxjava.version>3.0.1</rxjava.version>
     <maven-failsafe-plugin.version>3.0.0-M6</maven-failsafe-plugin.version>
     <awaitility.version>4.0.3</awaitility.version>
-    <ba-dua.version>0.6</ba-dua.version>
+    <ba-dua.version>0.6.0</ba-dua.version>
   </properties>
 
   <!-- dependency definitions -->
@@ -1110,6 +1110,34 @@
     </plugins>
   </build>
   <profiles>
+
+   <!--- BaduaProfile -->
+<!--    <profile>
+      <id>baduaProfile</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven-surefire-plugin.version}</version>
+            <configuration>
+              <argLine>
+                -Xmx1024m -XX:MaxPermSize=512m -javaagent:${basedir}/../ba-dua-lib/ba-dua-agent-rt-${ba-dua.version}-all.jar
+                -Xbootclasspath/p:${basedir}/ba-dua-lib/ba-dua-agent-rt-${ba-dua.version}-all.jar -Dfile.encoding=${project.build.sourceEncoding} </argLine>
+              <redirectTestOutputToFile>${redirectTestOutputToFile}</redirectTestOutputToFile>
+              <forkCount>1</forkCount>
+              <reuseForks>true</reuseForks>
+              &lt;!&ndash; <forkedProcessTimeoutInSeconds>1800</forkedProcessTimeoutInSeconds> &ndash;&gt;
+              <rerunFailingTestsCount>${testRetryCount}</rerunFailingTestsCount>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>-->
+
     <!-- jacoco profile -->
     <profile>
       <id>jacocoProfile</id>
