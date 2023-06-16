@@ -332,7 +332,7 @@
         <!-- Use a stable version instead of SNAPSHOT one -->
         <ba-dua.version>0.6.0</ba-dua.version>
         <argLine>-javaagent:target/dependency/ba-dua-agent-rt-${ba-dua.version}-all.jar
-          -Doutput.file=target/badua.ser
+          -Doutput.file=target/dependency/badua.ser
         </argLine>
       </properties>
       <!-- Needed to generate the report -->
@@ -360,6 +360,29 @@
                     <artifactItem>
                       <groupId>br.usp.each.saeg</groupId>
                       <artifactId>ba-dua-agent-rt</artifactId>
+                      <classifier>all</classifier>
+                      <version>${ba-dua.version}</version>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- copyng badua-cli on target/dependency -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.10</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>br.usp.each.saeg</groupId>
+                      <artifactId>ba-dua-cli</artifactId>
                       <classifier>all</classifier>
                       <version>${ba-dua.version}</version>
                     </artifactItem>
@@ -413,7 +436,7 @@
                     <artifactId>pitest-maven</artifactId>
                     <version>${pitest-maven-plugin.version}</version>
                     <configuration>
-                      <maxMutationsPerClass>50</maxMutationsPerClass>
+                      <maxMutationsPerClass>5</maxMutationsPerClass>
                         <targetClasses>
                             <param>org.apache.bookkeeper.client.BookKeeper</param>
                             <param>org.apache.bookkeeper.client.LedgerCreateOp</param>

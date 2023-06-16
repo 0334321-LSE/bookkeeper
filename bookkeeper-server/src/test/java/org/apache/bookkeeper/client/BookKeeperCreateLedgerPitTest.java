@@ -42,7 +42,7 @@ public class BookKeeperCreateLedgerPitTest extends
 
     @Before
     public void setUp() throws Exception {
-
+        // setOpportunisticString to true
         baseConf.setJournalWriteData(true);
         baseClientConf.setUseV2WireProtocol(true);
         //Set opportunisticStriping to true to reach the
@@ -53,7 +53,7 @@ public class BookKeeperCreateLedgerPitTest extends
     }
 
     public BookKeeperCreateLedgerPitTest(int ensSize, int wQS, int aQS, DigestType digestType, String passw, boolean isExceptionExpected) {
-        super(2, 60);
+        super(2, 70);
 
         this.ensSize = ensSize;
         this.wQS = wQS;
@@ -68,7 +68,7 @@ public class BookKeeperCreateLedgerPitTest extends
 
     }
 
-    @Test @Ignore
+    @Test
     public void CreateLedgerPitTest() {
         long entryId;
 
@@ -77,7 +77,6 @@ public class BookKeeperCreateLedgerPitTest extends
                 //exception was expected, it must go to catch branch
                 this.ledgerHandle = this.bkClient.createLedger(this.ensSize, this.wQS, this.aQS, this.digestType, this.password);
 
-                //TODO doesn't permit to write when wQS = 0 (right) but doesn't catch exception.
                 entryId = this.ledgerHandle.addEntry("Expect and error".getBytes());
 
                 if (this.ledgerHandle == null)

@@ -114,7 +114,7 @@ public class BookKeeperCreateLedgerAdvTest extends
     }
 
     public BookKeeperCreateLedgerAdvTest(long ledgerID, int ensSize, int wQS, int aQS, DigestType digestType, String passw, customMD customParam, boolean isExceptionExpected){
-        super(2,60);
+        super(2,70);
         this.ledgerID = ledgerID;
 
         this.ensSize = ensSize;

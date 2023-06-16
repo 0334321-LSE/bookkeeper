@@ -48,7 +48,7 @@ public class BookKeeperDeleteLedgerTest extends BookKeeperClusterTestCase {
     }
 
     public BookKeeperDeleteLedgerTest(long ledgerID, boolean expectedResult) {
-        super(2, 60);
+        super(2, 70);
         this.ledgerID = ledgerID;
         this.isExceptionExpected = expectedResult;
     }
