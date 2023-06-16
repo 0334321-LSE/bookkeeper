@@ -28,7 +28,7 @@ public class WriteCacheAddedTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void PutDifferentOrderTest(){
         boolean putResult;
 
@@ -39,7 +39,7 @@ public class WriteCacheAddedTest {
             System.out.println("----------------------------------------");
             Assert.assertTrue(putResult);
     }
-    @Test @Ignore
+    @Test
     public void PutIntoFullCacheTest(){
         boolean putResult;
         this.writeCache.put(0,0,this.entry);

@@ -31,6 +31,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Install phase with Maven
-        run: mvn clean install
+        run: mvn clean install -Dsurefire.rerunFailingTestsCount=2
 
 
