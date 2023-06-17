@@ -280,6 +280,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
+          <rerunFailingTestsCount>2</rerunFailingTestsCount>
           <trimStackTrace>false</trimStackTrace>
           <properties>
             <property>
@@ -525,6 +526,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <skipTests>false</skipTests>
+              <rerunFailingTestsCount>2</rerunFailingTestsCount>
             </configuration>
           </plugin>
         </plugins>

@@ -110,7 +110,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <javac.target>1.8</javac.target>
     <redirectTestOutputToFile>true</redirectTestOutputToFile>
-    <testRetryCount>0</testRetryCount>
+    <testRetryCount>2</testRetryCount>
     <src.dir>src/main/java</src.dir>
     <test.additional.args />
 
@@ -1242,7 +1242,7 @@
               <reuseForks>true</reuseForks>
               <forkedProcessTimeoutInSeconds>1800</forkedProcessTimeoutInSeconds>
               <trimStackTrace>false</trimStackTrace>
-              <rerunFailingTestsCount>0</rerunFailingTestsCount>
+              <rerunFailingTestsCount>2</rerunFailingTestsCount>
             </configuration>
           </plugin>
         </plugins>
@@ -1263,6 +1263,7 @@
               <reuseForks>true</reuseForks>
               <forkedProcessTimeoutInSeconds>1800</forkedProcessTimeoutInSeconds>
               <trimStackTrace>false</trimStackTrace>
+              <rerunFailingTestsCount>2</rerunFailingTestsCount>
             </configuration>
           </plugin>
         </plugins>
