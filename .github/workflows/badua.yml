@@ -26,7 +26,7 @@ jobs:
         run: mvn verify -P baduaProfile -Dsurefire.rerunFailingTestsCount=2
 
       - name: Convert ser to xml
-        working-director: bookkeeper-server/target/dependency
+        working-directory: bookkeeper-server/target/dependency
         run: java -jar ba-dua-cli-0.6.0-all.jar report -input badua.ser -classes classes -show-classes -show-methods -xml badua.xml
 
       - name: Upload report
